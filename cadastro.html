@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | A Samaritana</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>A Samaritana</h1>
+                <p>Painel do Proprietário</p>
+            </div>
+            <div>
+                <a href="index.html" class="btn-voltar">🛒 Ir para a Loja</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container-admin">
+        <!-- BLOCO DE CADASTRO -->
+        <div class="form-box">
+            <h2>Cadastrar Novo Artigo Católico</h2>
+            <p class="subtitle">Preencha os dados abaixo para publicar o produto na vitrine.</p>
+            
+            <form id="form-cadastro">
+                <div class="input-group">
+                    <label for="nome">Nome do Produto</label>
+                    <input type="text" id="nome" placeholder="Ex: Imagem de São José em Porcelana" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="preco">Preço (R$)</label>
+                    <input type="number" id="preco" step="0.01" placeholder="Ex: 89.90" required>
+                </div>
+
+                <!-- ⚠️ ADICIONADO NO CADASTRO: CATEGORIA PARA CASAR COM O MENU -->
+                <div class="input-group">
+                    <label for="categoria">Categoria do Produto</label>
+                    <select id="categoria" required>
+                        <option value="Imagens Sacras">Imagens Sacras</option>
+                        <option value="Terços e Rosários">Terços e Rosários</option>
+                        <option value="Bíblias e Livros">Bíblias e Livros</option>
+                        <option value="Velas e Incensos">Velas e Incensos</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="foto">Foto do Produto</label>
+                    <input type="file" id="foto" accept="image/*" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="descricao">Descrição Detalhada</label>
+                    <textarea id="descricao" rows="4" placeholder="Digite os detalhes do produto..." style="width: 100%; padding: 12px; border: 1px solid #dcdcdc; border-radius: 6px; outline: none; font-size: 1rem; resize: vertical;" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-cadastrar">🕊️ Publicar Produto</button>
+            </form>
+        </div>
+
+        <!-- ⚠️ NOVO BLOCO: GERENCIAMENTO E EXCLUSÃO DE PRODUTOS -->
+        <div class="form-box" style="margin-top: 30px;">
+            <h2>Gerenciar Artigos Publicados</h2>
+            <p class="subtitle">Veja abaixo os itens cadastrados e remova-os da vitrine se necessário.</p>
+            
+            <div id="lista-exclusao-admin" class="admin-items-list">
+                <!-- Itens cadastrados aparecerão aqui com botão de excluir via JS -->
+            </div>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

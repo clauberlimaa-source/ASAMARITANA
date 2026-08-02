@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Samaritana | Artigos Católicos em Pedreira</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- BARRA DE AVISOS -->
+    <div class="top-bar">
+        <p>Enviamos para todo o Brasil direto de Pedreira-SP | Parcelamento em até 6x</p>
+    </div>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>A Samaritana</h1>
+                <p>Artigos Católicos</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar terços, imagens, bíblias...">
+                <button>🔍</button>
+            </div>
+            <div class="cart-icon" onclick="abrirCarrinhoLateral()">
+                🛒 <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MENU DE NAVEGAÇÃO INTERATIVO (Ficará fixo ao rolar) -->
+    <nav id="navbar-principal">
+        <ul>
+            <li><a href="#" onclick="rolarParaSecao(event, 'topo')">Início</a></li>
+            <li><a href="#" onclick="filtrarCategoria('Imagens Sacras')">Imagens Sacras</a></li>
+            <li><a href="#" onclick="filtrarCategoria('Terços e Rosários')">Terços e Rosários</a></li>
+            <li><a href="#" onclick="filtrarCategoria('Bíblias e Livros')">Bíblias e Livros</a></li>
+            <li><a href="#" onclick="filtrarCategoria('Velas e Incensos')">Velas e Incensos</a></li>
+        </ul>
+    </nav>
+
+    <!-- BANNER PRINCIPAL (HERO) -->
+    <section class="hero" id="topo">
+        <div class="hero-content">
+            <h2>Artigos que Alimentam a Fé e a Devoção</h2>
+            <p>Tradição, beleza e espiritualidade para o seu lar e sua paróquia.</p>
+            <!-- Botão agora rola suavemente para a vitrine abaixo -->
+            <a href="#" class="btn-hero" onclick="rolarParaSecao(event, 'vitrine-produtos')">Conhecer Coleção</a>
+        </div>
+    </section>
+
+    <!-- VITRINE DE PRODUTOS -->
+    <main class="container" id="vitrine-produtos">
+        <!-- O título vai mudar dinamicamente conforme a categoria clicada -->
+        <h2 class="section-title" id="titulo-vitrine">Destaques de Devoção</h2>
+        
+        <div class="products-grid">
+            <!-- Os produtos serão injetados aqui via JS para suportar os filtros -->
+        </div>
+    </main>
+
+    <!-- CARRINHO LATERAL OCULTO -->
+    <div id="carrinho-lateral" class="cart-sidebar">
+        <div class="cart-sidebar-header">
+            <h3>Sacola de Compras 🕊️</h3>
+            <button class="btn-fechar-cart" onclick="fecharCarrinhoLateral()">✕</button>
+        </div>
+        <div id="itens-do-carrinho" class="cart-sidebar-body">
+            <p class="cart-empty-msg">Seu carrinho está vazio.</p>
+        </div>
+        <div class="cart-sidebar-footer">
+            <div class="cart-total-row">
+                <span>Total:</span>
+                <span id="preco-total-carrinho">R$ 0,00</span>
+            </div>
+            <a href="checkout.html" class="btn-checkout-cart">🔒 Finalizar Compra</a>
+        </div>
+    </div>
+    <div id="cart-overlay" class="cart-overlay" onclick="fecharCarrinhoLateral()"></div>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="footer-content">
+            <p><strong>A Samaritana Artigos Católicos</strong></p>
+            <p>Pedreira - SP | Capital da Porcelana</p>
+            <p class="copyright">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

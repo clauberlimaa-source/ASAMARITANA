@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto | A Samaritana</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- BARRA DE AVISOS -->
+    <div class="top-bar">
+        <p>Enviamos para todo o Brasil direto de Pedreira-SP | Parcelamento em até 6x</p>
+    </div>
+
+    <!-- CABEÇALHO -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>A Samaritana</h1>
+                    <p>Artigos Católicos</p>
+                </a>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar terços, imagens, bíblias...">
+                <button>🔍</button>
+            </div>
+            <div class="cart-icon">
+                🛒 <span id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ÁREA DO PRODUTO -->
+    <!-- Substitua a tag <main> completa no produto.html por esta estrutura preparada para o JS: -->
+<main class="container product-page-container">
+    
+    <!-- LADO ESQUERDO: IMAGEM -->
+    <div class="product-page-image">
+        <div class="main-img-box" id="detalhe-icone">👑</div>
+        <div class="thumb-images">
+            <div class="thumb active" id="thumb-principal">👑</div>
+            <div class="thumb">✨</div>
+            <div class="thumb">📦</div>
+        </div>
+    </div>
+
+    <!-- LADO DIREITO: INFORMAÇÕES E COMPRA -->
+    <div class="product-page-info">
+        <span class="category-tag">Artigo de Fé</span>
+        <h2 id="detalhe-nome">Nome do Produto de Exemplo</h2>
+        <p class="sku">Código exclusivo | Produzido em Pedreira-SP</p>
+        
+        <div class="price-box">
+            <p class="current-price" id="detalhe-preco">R$ 0,00</p>
+            <p class="installments">Parcelamento facilitado sem juros em até 6x</p>
+        </div>
+
+        <!-- ID adicionado para o JS injetar a descrição do produto -->
+        <p class="description" id="detalhe-descricao">
+            A descrição do artigo católico selecionado aparecerá aqui.
+        </p>
+
+        <div class="purchase-actions">
+            <div class="quantity-selector">
+                <button>-</button>
+                <input type="number" value="1" min="1">
+                <button>+</button>
+            </div>
+            <a href="checkout.html" class="btn-buy-now" style="text-decoration: none; text-align: center; display: block;">🕊️ Comprar Agora</a>
+        </div>
+
+        <div class="shipping-box">
+            <label for="cep">Calcular frete e prazo:</label>
+            <div class="shipping-input">
+                <input type="text" id="cep" placeholder="00000-000">
+                <button>Calcular</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+
+    <!-- RODAPÉ -->
+    <footer>
+        <div class="footer-content">
+            <p><strong>A Samaritana Artigos Católicos</strong></p>
+            <p>Pedreira - SP | Capital da Porcelana</p>
+            <p class="copyright">&copy; 2026 Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
