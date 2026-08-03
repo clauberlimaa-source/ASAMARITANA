@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Samaritana | Artigos Católicos em Pedreira</title>
+    <!-- Política de Segurança de Conteúdo (CSP) básica -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -21,51 +23,47 @@
                 <p>Artigos Católicos</p>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Buscar terços, imagens, bíblias...">
-                <button>🔍</button>
+                <input type="text" placeholder="Buscar terços, imagens, bíblias..." id="campo-busca">
+                <button id="btn-busca">🔍</button>
             </div>
-            <div class="cart-icon" onclick="abrirCarrinhoLateral()">
+            <div class="cart-icon" id="cart-icon">
                 🛒 <span id="cart-count">0</span>
             </div>
         </div>
     </header>
 
-    <!-- MENU DE NAVEGAÇÃO INTERATIVO (Ficará fixo ao rolar) -->
+    
+    <!-- MENU DE NAVEGAÇÃO INTERATIVO -->
     <nav id="navbar-principal">
         <ul>
-            <li><a href="#" onclick="rolarParaSecao(event, 'topo')">Início</a></li>
-            <li><a href="#" onclick="filtrarCategoria('Imagens Sacras')">Imagens Sacras</a></li>
-            <li><a href="#" onclick="filtrarCategoria('Terços e Rosários')">Terços e Rosários</a></li>
-            <li><a href="#" onclick="filtrarCategoria('Bíblias e Livros')">Bíblias e Livros</a></li>
-            <li><a href="#" onclick="filtrarCategoria('Velas e Incensos')">Velas e Incensos</a></li>
+            <li><a href="#" id="link-inicio">Início</a></li>
+            <li><a href="#" data-categoria="Imagens Sacras">Imagens Sacras</a></li>
+            <li><a href="#" data-categoria="Terços e Rosários">Terços e Rosários</a></li>
+            <li><a href="#" data-categoria="Bíblias e Livros">Bíblias e Livros</a></li>
+            <li><a href="#" data-categoria="Velas e Incensos">Velas e Incensos</a></li>
         </ul>
     </nav>
 
-    <!-- BANNER PRINCIPAL (HERO) -->
+    <!-- BANNER PRINCIPAL -->
     <section class="hero" id="topo">
         <div class="hero-content">
             <h2>Artigos que Alimentam a Fé e a Devoção</h2>
             <p>Tradição, beleza e espiritualidade para o seu lar e sua paróquia.</p>
-            <!-- Botão agora rola suavemente para a vitrine abaixo -->
-            <a href="#" class="btn-hero" onclick="rolarParaSecao(event, 'vitrine-produtos')">Conhecer Coleção</a>
+            <a href="#" class="btn-hero" id="btn-conhecer">Conhecer Coleção</a>
         </div>
     </section>
 
     <!-- VITRINE DE PRODUTOS -->
     <main class="container" id="vitrine-produtos">
-        <!-- O título vai mudar dinamicamente conforme a categoria clicada -->
         <h2 class="section-title" id="titulo-vitrine">Destaques de Devoção</h2>
-        
-        <div class="products-grid">
-            <!-- Os produtos serão injetados aqui via JS para suportar os filtros -->
-        </div>
+        <div class="products-grid" id="products-grid"></div>
     </main>
 
-    <!-- CARRINHO LATERAL OCULTO -->
+    <!-- CARRINHO LATERAL -->
     <div id="carrinho-lateral" class="cart-sidebar">
         <div class="cart-sidebar-header">
             <h3>Sacola de Compras 🕊️</h3>
-            <button class="btn-fechar-cart" onclick="fecharCarrinhoLateral()">✕</button>
+            <button class="btn-fechar-cart" id="btn-fechar-cart">✕</button>
         </div>
         <div id="itens-do-carrinho" class="cart-sidebar-body">
             <p class="cart-empty-msg">Seu carrinho está vazio.</p>
@@ -78,16 +76,20 @@
             <a href="checkout.html" class="btn-checkout-cart">🔒 Finalizar Compra</a>
         </div>
     </div>
-    <div id="cart-overlay" class="cart-overlay" onclick="fecharCarrinhoLateral()"></div>
+    <div id="cart-overlay" class="cart-overlay"></div>
 
     <!-- RODAPÉ -->
     <footer>
-        <div class="footer-content">
-            <p><strong>A Samaritana Artigos Católicos</strong></p>
-            <p>Pedreira - SP | Capital da Porcelana</p>
-            <p class="copyright">&copy; 2026 Todos os direitos reservados.</p>
-        </div>
-    </footer>
+    <div class="footer-content">
+        <p><strong>A Samaritana Artigos Católicos</strong></p>
+        <p>Pedreira - SP | Capital da Porcelana</p>
+        <p class="copyright">&copy; 2026 Todos os direitos reservados.</p>
+        <p style="font-size:0.7rem; color:#718096; margin-top:10px;">
+            <a href="gestao.html" style="color:#718096; text-decoration:none;">Acesso restrito</a>
+        </p>
+    </div>
+</footer>
+
 
     <script src="js/script.js"></script>
 </body>

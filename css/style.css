@@ -1095,3 +1095,13 @@ body.nav-fixada {
     color: #4a5568;
     margin-bottom: 30px;
 }
+
+.sugestao-foto {
+    cursor: pointer;
+    color: #1c3d5a;
+    text-decoration: underline;
+    font-weight: bold;
+}
+.sugestao-foto:hover {
+    color: #bfa15f;
+}

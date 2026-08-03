@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão | A Samaritana</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos específicos para a tela de login */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(28, 61, 90, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s;
+        }
+        .login-overlay.hidden {
+            display: none;
+            opacity: 0;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .login-box h2 {
+            font-family: 'Georgia', serif;
+            color: #1c3d5a;
+            margin-bottom: 8px;
+        }
+        .login-box .sub {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .login-box .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .login-box .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        .login-box .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .login-box .input-group input:focus {
+            border-color: #bfa15f;
+        }
+        .login-box .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: #1c3d5a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .login-box .btn-login:hover {
+            background: #bfa15f;
+            color: #1c3d5a;
+        }
+        .login-box .erro {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .login-box .erro.visible {
+            display: block;
+        }
+        /* Esconde o conteúdo admin enquanto não logado */
+        .admin-content {
+            display: none;
+        }
+        .admin-content.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <h2>A Samaritana</h2>
+            <p class="sub">Área restrita ao proprietário</p>
+            <form id="form-login">
+                <div class="input-group">
+                    <label for="usuario">Usuário</label>
+                    <input type="text" id="usuario" placeholder="admin" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">🔑 Acessar</button>
+                <div id="erro-login" class="erro">Usuário ou senha incorretos.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO ADMIN (só aparece após login) -->
+    <div id="admin-content" class="admin-content">
+        <header>
+            <div class="header-container">
+                <div class="logo">
+                    <h1>A Samaritana</h1>
+                    <p>Painel do Proprietário</p>
+                </div>
+                <div>
+                    <a href="index.html" class="btn-voltar">🛒 Ir para a Loja</a>
+                    <button id="btn-sair" class="btn-voltar" style="background: #e53e3e; color: white; border: none; margin-left: 10px;">Sair</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="container-admin">
+
+            <!-- CADASTRO -->
+            <div class="form-box">
+                <h2>Cadastrar Novo Artigo Católico</h2>
+                <p class="subtitle">Preencha os dados abaixo para publicar o produto na vitrine.</p>
+                
+                <form id="form-cadastro">
+    <div class="input-group">
+        <label for="nome">Nome do Produto *</label>
+        <input type="text" id="nome" placeholder="Ex: Imagem de São José em Porcelana" required>
+    </div>
+
+    <div class="input-group">
+        <label for="preco">Preço (R$) *</label>
+        <input type="number" id="preco" step="0.01" placeholder="Ex: 89.90" required>
+    </div>
+
+    <div class="input-group">
+        <label for="categoria">Categoria *</label>
+        <select id="categoria" required>
+            <option value="Imagens Sacras">Imagens Sacras</option>
+            <option value="Terços e Rosários">Terços e Rosários</option>
+            <option value="Bíblias e Livros">Bíblias e Livros</option>
+            <option value="Velas e Incensos">Velas e Incensos</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label for="estoque">Quantidade em Estoque *</label>
+        <input type="number" id="estoque" value="10" min="0" required>
+        <p style="font-size:0.8rem; color:#718096;">Deixe 0 para indicar "Esgotado".</p>
+    </div>
+
+    <div class="input-group">
+        <label>Fotos do Produto (máx. 3 imagens)</label>
+        <input type="file" id="fotos" accept="image/*" multiple>
+        <p style="font-size:0.8rem; color:#718096; margin-top:5px;">
+            Formatos: JPG, PNG, WEBP (até 2MB cada). Selecione até 3 imagens.
+        </p>
+        <div id="preview-fotos" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"></div>
+    </div>
+
+    <div class="input-group">
+        <label for="foto-url">URL da Foto (opcional – use se não fizer upload)</label>
+        <input type="url" id="foto-url" placeholder="https://exemplo.com/imagem.jpg">
+        <p style="font-size:0.8rem; color:#718096; margin-top:5px;">
+            Sugestões: 
+            <span class="sugestao-foto" data-url="imagens/terco.jpg">Terço</span> | 
+            <span class="sugestao-foto" data-url="imagens/santa.jpg">Santa</span> | 
+            <span class="sugestao-foto" data-url="imagens/biblia.jpg">Bíblia</span>
+        </p>
+    </div>
+
+    <div class="input-group">
+        <label for="descricao">Descrição Detalhada *</label>
+        <textarea id="descricao" rows="4" placeholder="Digite os detalhes do produto..." style="width: 100%; padding: 12px; border: 1px solid #dcdcdc; border-radius: 6px; outline: none; font-size: 1rem; resize: vertical; min-height: 120px;" required></textarea>
+    </div>
+
+    <button type="submit" class="btn-cadastrar">🕊️ Publicar Produto</button>
+</form>
+            </div>
+
+            <!-- GERENCIAR PRODUTOS -->
+            <div class="form-box" style="margin-top: 30px;">
+                <h2>Gerenciar Artigos Publicados</h2>
+                <p class="subtitle">Veja abaixo os itens cadastrados, atualize o estoque ou remova-os.</p>
+                <div id="lista-exclusao-admin" class="admin-items-list"></div>
+            </div>
+
+            <!-- RELATÓRIO DE PEDIDOS -->
+            <div class="form-box" style="margin-top: 30px; border-top-color: #2f855a;">
+                <h2>📋 Relatório de Pedidos Diários</h2>
+                <p class="subtitle">Pedidos realizados pelos clientes (simulação local).</p>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button id="btn-enviar-email" class="btn-cadastrar" style="background-color: #2f855a; width: auto; padding: 10px 25px;">
+                        📧 Enviar Relatório por E-mail
+                    </button>
+                    <button id="btn-limpar-pedidos" class="btn-cadastrar" style="background-color: #a83232; width: auto; padding: 10px 25px;">
+                        🗑️ Limpar Pedidos Antigos
+                    </button>
+                </div>
+                <div id="lista-pedidos-admin" class="admin-items-list"></div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

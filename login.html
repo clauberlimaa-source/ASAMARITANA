@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Restrito | A Samaritana</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 380px;
+            border-top: 4px solid #bfa15f;
+        }
+        .login-box h1 {
+            font-family: 'Georgia', serif;
+            color: #1c3d5a;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .login-box p {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            outline: none;
+            font-size: 1rem;
+        }
+        .login-box input:focus {
+            border-color: #1c3d5a;
+        }
+        .login-box button {
+            width: 100%;
+            background: #1c3d5a;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .login-box button:hover {
+            background: #bfa15f;
+            color: #1c3d5a;
+        }
+        .login-box .erro {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+        .login-box .voltar {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .login-box .voltar:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h1>A Samaritana</h1>
+        <p>Área restrita ao proprietário</p>
+        <form id="form-login">
+            <input type="password" id="senha" placeholder="Digite a senha de acesso" required>
+            <button type="submit">🔐 Acessar Painel</button>
+            <div id="msg-erro" class="erro">Senha incorreta. Tente novamente.</div>
+        </form>
+        <a href="index.html" class="voltar">← Voltar para a loja</a>
+    </div>
+    <script>
+        document.getElementById('form-login').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const senha = document.getElementById('senha').value;
+            // Verifica a senha (hash simulado)
+            // Em produção, use bcrypt no backend. Aqui usamos um hash simples (SHA-256) para demonstração.
+            // A senha fixa é "samaritana2026" - você pode alterar.
+            // Para testes, vamos usar uma string codificada em base64 (não é criptografia, só ofuscação).
+            // O ideal é usar uma função hash real, mas para front-end é apenas simulação.
+            const senhaCorreta = 'samaritana2026';
+            // Para fins de demonstração, comparamos diretamente (não seguro, mas é só front-end)
+            if (senha === senhaCorreta) {
+                // Salva no sessionStorage que está logado
+                sessionStorage.setItem('admin_logado', 'true');
+                window.location.href = 'gestao.html';
+            } else {
+                document.getElementById('msg-erro').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
