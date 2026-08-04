@@ -296,6 +296,10 @@ function renderizarVitrine(lista) {
 //  RENDERIZAÇÃO DO CARRINHO LATERAL
 // ============================================================
 
+// ============================================================
+//  RENDERIZAÇÃO DO CARRINHO LATERAL (com botão remover)
+// ============================================================
+
 function renderizarCarrinhoLateral() {
     const container = document.getElementById('itens-do-carrinho');
     const totalSpan = document.getElementById('preco-total-carrinho');
@@ -314,10 +318,11 @@ function renderizarCarrinhoLateral() {
     }
 
     let total = 0;
-    itens.forEach(item => {
+    itens.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'cart-sidebar-item';
 
+        // Imagem
         const img = document.createElement('img');
         img.src = item.fotoUrl || 'imagens/placeholder.jpg';
         img.style.width = '40px';
@@ -327,6 +332,7 @@ function renderizarCarrinhoLateral() {
         img.style.backgroundColor = '#fafbfc';
         img.style.padding = '4px';
 
+        // Informações
         const info = document.createElement('div');
         info.className = 'cart-item-info';
         const nome = document.createElement('h4');
@@ -340,14 +346,53 @@ function renderizarCarrinhoLateral() {
         info.appendChild(preco);
         info.appendChild(qtd);
 
+        // Botão remover (X)
+        const btnRemover = document.createElement('button');
+        btnRemover.textContent = '✕';
+        btnRemover.style.cssText = `
+            background: none;
+            border: none;
+            color: #a83232;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 8px;
+            font-weight: bold;
+            transition: color 0.2s;
+        `;
+        btnRemover.addEventListener('mouseenter', () => btnRemover.style.color = '#e53e3e');
+        btnRemover.addEventListener('mouseleave', () => btnRemover.style.color = '#a83232');
+        btnRemover.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removerItemCarrinho(index);
+        });
+
         div.appendChild(img);
         div.appendChild(info);
+        div.appendChild(btnRemover);
         container.appendChild(div);
 
         total += parseFloat(item.preco) * (item.quantidade || 1);
     });
 
     totalSpan.textContent = formatarPreco(total);
+}
+
+// ============================================================
+//  REMOVER ITEM DO CARRINHO (por índice)
+// ============================================================
+
+function removerItemCarrinho(index) {
+    const itens = carregarCarrinho();
+    if (index >= 0 && index < itens.length) {
+        itens.splice(index, 1);
+        salvarCarrinho(itens);
+        atualizarContadorCarrinho();
+        renderizarCarrinhoLateral();
+        // Se o carrinho estiver vazio, fechar ou manter aberto (opcional)
+        if (itens.length === 0) {
+            // Podemos fechar automaticamente? Deixamos aberto para o usuário ver a mensagem.
+        }
+    }
 }
 
 // ============================================================
