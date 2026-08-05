@@ -47,18 +47,24 @@
             <h2 id="detalhe-nome">Nome do Produto</h2>
             <p class="sku">Código exclusivo | Produzido em Pedreira-SP</p>
             <div class="price-box">
-                <p class="current-price" id="detalhe-preco">R$ 0,00</p>
-                <p class="installments">Parcelamento facilitado sem juros em até 6x</p>
-            </div>
-            <p class="description" id="detalhe-descricao">Descrição do produto aqui.</p>
-            <div class="purchase-actions">
-                <div class="quantity-selector">
-                    <button id="qtd-menos">-</button>
-                    <input type="number" id="qtd-produto" value="1" min="1">
-                    <button id="qtd-mais">+</button>
-                </div>
-                <button class="btn-buy-now" id="btn-comprar-agora">🕊️ Comprar Agora</button>
-            </div>
+    <p class="current-price" id="detalhe-preco">R$ 0,00</p>
+    <p class="installments">Parcelamento facilitado sem juros em até 6x</p>
+</div>
+
+<!-- NOVO: SUBTOTAL -->
+<div class="subtotal-box" style="margin: 10px 0 20px 0; font-size: 1.1rem; color: #2d3748;">
+    <span>Subtotal: </span>
+    <span id="subtotal-produto" style="font-weight: bold; color: #1c3d5a;">R$ 0,00</span>
+</div>
+
+<div class="purchase-actions">
+    <div class="quantity-selector">
+        <button id="qtd-menos">-</button>
+        <input type="number" id="qtd-produto" value="1" min="1">
+        <button id="qtd-mais">+</button>
+    </div>
+    <button class="btn-buy-now" id="btn-comprar-agora">🕊️ Comprar Agora</button>
+</div>
             <div class="shipping-box">
                 <label for="cep-calculo">Calcular frete e prazo:</label>
                 <div class="shipping-input">

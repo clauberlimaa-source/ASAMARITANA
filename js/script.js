@@ -1,15 +1,9 @@
 /**
- * script.js – Versão completa com:
- * - Segurança (sanitização, validação)
- * - Autenticação admin (login/senha)
- * - Múltiplas imagens (até 3 por produto)
- * - Estoque e pedidos
- * - Carrinho, checkout, vitrine, detalhes
- * - Correção do "Início" (resetar filtro)
+ * script.js – Versão com verificações de segurança para evitar erros de null
  */
 
 // ============================================================
-//  UTILITÁRIOS DE SEGURANÇA E FORMATAÇÃO
+//  UTILITÁRIOS
 // ============================================================
 
 function sanitizarTexto(texto) {
@@ -33,7 +27,7 @@ function formatarPreco(valor) {
 }
 
 // ============================================================
-//  AUTENTICAÇÃO (admin)
+//  AUTENTICAÇÃO
 // ============================================================
 
 const ADMIN_CREDENTIALS = {
@@ -59,7 +53,7 @@ function fazerLogout() {
 }
 
 // ============================================================
-//  CORREÇÃO DO "INÍCIO" – resetar filtro
+//  RESETAR FILTRO
 // ============================================================
 
 function resetarFiltro() {
@@ -71,7 +65,7 @@ function resetarFiltro() {
 }
 
 // ============================================================
-//  GERENCIAMENTO DE PRODUTOS (com estoque e múltiplas imagens)
+//  GERENCIAMENTO DE PRODUTOS
 // ============================================================
 
 function carregarProdutos() {
@@ -82,7 +76,6 @@ function carregarProdutos() {
             if (Array.isArray(produtos) && produtos.length > 0) return produtos;
         }
     } catch (e) {}
-    // Produtos padrão com estoque e array de imagens
     return [
         {
             nome: 'Terço de Madeira Rústica',
@@ -143,7 +136,7 @@ function adicionarPedido(pedido) {
 }
 
 // ============================================================
-//  CARRINHO (sessionStorage)
+//  CARRINHO
 // ============================================================
 
 function carregarCarrinho() {
@@ -165,12 +158,12 @@ function atualizarContadorCarrinho() {
     const itens = carregarCarrinho();
     const total = itens.reduce((acc, item) => acc + (item.quantidade || 1), 0);
     document.querySelectorAll('.cart-count, #cart-count, #cart-count-detalhe').forEach(el => {
-        el.textContent = total;
+        if (el) el.textContent = total;
     });
 }
 
 // ============================================================
-//  UPLOAD DE MÚLTIPLAS IMAGENS (até 3)
+//  UPLOAD DE IMAGENS
 // ============================================================
 
 let imagensSelecionadas = [];
@@ -208,7 +201,7 @@ function atualizarPreviewFotos() {
 }
 
 // ============================================================
-//  RENDERIZAÇÃO DA VITRINE (usa a primeira imagem)
+//  RENDERIZAÇÃO DA VITRINE
 // ============================================================
 
 function renderizarVitrine(lista) {
@@ -224,19 +217,17 @@ function renderizarVitrine(lista) {
         return;
     }
 
-    lista.forEach(produto => {
+    lista.forEach((produto, index) => {
         const card = document.createElement('div');
         card.className = 'product-card';
 
-        // Link para detalhes
         const link = document.createElement('div');
         link.style.cursor = 'pointer';
         link.addEventListener('click', () => {
-            sessionStorage.setItem('produto_atual_samaritana', JSON.stringify(produto));
+            sessionStorage.setItem('produto_index', index);
             window.location.href = 'produto.html';
         });
 
-        // Imagem (usa a primeira do array)
         const imgDiv = document.createElement('div');
         imgDiv.className = 'product-img';
         const img = document.createElement('img');
@@ -248,19 +239,16 @@ function renderizarVitrine(lista) {
         img.style.objectFit = 'contain';
         imgDiv.appendChild(img);
 
-        // Nome
         const nomeH3 = document.createElement('h3');
         nomeH3.textContent = sanitizarTexto(produto.nome);
 
         link.appendChild(imgDiv);
         link.appendChild(nomeH3);
 
-        // Preço
         const precoP = document.createElement('p');
         precoP.className = 'price';
         precoP.textContent = formatarPreco(produto.preco);
 
-        // Botão adicionar
         const btn = document.createElement('button');
         btn.className = 'btn-add';
         const estoque = produto.estoque !== undefined ? produto.estoque : 0;
@@ -277,7 +265,6 @@ function renderizarVitrine(lista) {
             });
         }
 
-        // Badge de estoque baixo
         if (estoque > 0 && estoque <= 3) {
             const badge = document.createElement('span');
             badge.style.cssText = 'display: inline-block; background: #ed8936; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; margin-top: 5px;';
@@ -294,10 +281,6 @@ function renderizarVitrine(lista) {
 
 // ============================================================
 //  RENDERIZAÇÃO DO CARRINHO LATERAL
-// ============================================================
-
-// ============================================================
-//  RENDERIZAÇÃO DO CARRINHO LATERAL (com botão remover)
 // ============================================================
 
 function renderizarCarrinhoLateral() {
@@ -322,7 +305,6 @@ function renderizarCarrinhoLateral() {
         const div = document.createElement('div');
         div.className = 'cart-sidebar-item';
 
-        // Imagem
         const img = document.createElement('img');
         img.src = item.fotoUrl || 'imagens/placeholder.jpg';
         img.style.width = '40px';
@@ -332,7 +314,6 @@ function renderizarCarrinhoLateral() {
         img.style.backgroundColor = '#fafbfc';
         img.style.padding = '4px';
 
-        // Informações
         const info = document.createElement('div');
         info.className = 'cart-item-info';
         const nome = document.createElement('h4');
@@ -346,7 +327,6 @@ function renderizarCarrinhoLateral() {
         info.appendChild(preco);
         info.appendChild(qtd);
 
-        // Botão remover (X)
         const btnRemover = document.createElement('button');
         btnRemover.textContent = '✕';
         btnRemover.style.cssText = `
@@ -377,10 +357,6 @@ function renderizarCarrinhoLateral() {
     totalSpan.textContent = formatarPreco(total);
 }
 
-// ============================================================
-//  REMOVER ITEM DO CARRINHO (por índice)
-// ============================================================
-
 function removerItemCarrinho(index) {
     const itens = carregarCarrinho();
     if (index >= 0 && index < itens.length) {
@@ -388,15 +364,11 @@ function removerItemCarrinho(index) {
         salvarCarrinho(itens);
         atualizarContadorCarrinho();
         renderizarCarrinhoLateral();
-        // Se o carrinho estiver vazio, fechar ou manter aberto (opcional)
-        if (itens.length === 0) {
-            // Podemos fechar automaticamente? Deixamos aberto para o usuário ver a mensagem.
-        }
     }
 }
 
 // ============================================================
-//  RENDERIZAÇÃO DA LISTA DE PRODUTOS NO ADMIN
+//  ADMIN: LISTA DE PRODUTOS
 // ============================================================
 
 function renderizarListaExclusao() {
@@ -478,7 +450,7 @@ function renderizarListaExclusao() {
 }
 
 // ============================================================
-//  RENDERIZAÇÃO DOS PEDIDOS NO ADMIN
+//  ADMIN: PEDIDOS
 // ============================================================
 
 function renderizarPedidosAdmin() {
@@ -556,6 +528,25 @@ function adicionarAoCarrinho(produto) {
     abrirCarrinho();
 }
 
+function adicionarAoCarrinhoComQuantidade(produto, quantidade) {
+    const itens = carregarCarrinho();
+    const imagens = produto.imagens && produto.imagens.length > 0 ? produto.imagens : ['imagens/placeholder.jpg'];
+    const existente = itens.find(item => item.nome === produto.nome);
+    if (existente) {
+        existente.quantidade = (existente.quantidade || 0) + quantidade;
+    } else {
+        itens.push({
+            nome: produto.nome,
+            preco: produto.preco,
+            fotoUrl: imagens[0],
+            quantidade: quantidade
+        });
+    }
+    salvarCarrinho(itens);
+    atualizarContadorCarrinho();
+    renderizarCarrinhoLateral();
+}
+
 function excluirProduto(index) {
     if (!confirm('Remover este artigo permanentemente?')) return;
     const produtos = carregarProdutos();
@@ -583,22 +574,26 @@ function filtrarPorCategoria(categoria) {
 }
 
 // ============================================================
-//  CONTROLE DO CARRINHO LATERAL
+//  CARRINHO LATERAL
 // ============================================================
 
 function abrirCarrinho() {
-    document.getElementById('carrinho-lateral')?.classList.add('active');
-    document.getElementById('cart-overlay')?.classList.add('active');
+    const sidebar = document.getElementById('carrinho-lateral');
+    const overlay = document.getElementById('cart-overlay');
+    if (sidebar) sidebar.classList.add('active');
+    if (overlay) overlay.classList.add('active');
     renderizarCarrinhoLateral();
 }
 
 function fecharCarrinho() {
-    document.getElementById('carrinho-lateral')?.classList.remove('active');
-    document.getElementById('cart-overlay')?.classList.remove('active');
+    const sidebar = document.getElementById('carrinho-lateral');
+    const overlay = document.getElementById('cart-overlay');
+    if (sidebar) sidebar.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
 }
 
 // ============================================================
-//  FUNÇÃO DE ROLAGEM SUAVE
+//  ROLAGEM SUAVE
 // ============================================================
 
 function rolarParaSecao(id) {
@@ -611,72 +606,248 @@ function rolarParaSecao(id) {
 }
 
 // ============================================================
-//  FUNÇÃO PARA CARREGAR DETALHES DO PRODUTO (com múltiplas imagens)
+//  CÁLCULO DE FRETE
 // ============================================================
 
-function carregarDetalhesProduto() {
-    const produtoStr = sessionStorage.getItem('produto_atual_samaritana');
-    if (!produtoStr) {
-        window.location.href = 'index.html';
-        return;
+function calcularFrete(cep, valorTotal) {
+    cep = cep.replace(/\D/g, '');
+    if (cep.length !== 8) {
+        return {
+            erro: true,
+            mensagem: 'CEP inválido. Digite 8 dígitos (ex: 13000-000).'
+        };
     }
-    try {
-        const produto = JSON.parse(produtoStr);
-        document.title = sanitizarTexto(produto.nome) + ' | A Samaritana';
-        document.getElementById('detalhe-nome').textContent = sanitizarTexto(produto.nome);
-        document.getElementById('detalhe-preco').textContent = formatarPreco(produto.preco);
-        document.getElementById('detalhe-descricao').textContent = sanitizarTexto(produto.descricao || '');
-        document.getElementById('detalhe-categoria').textContent = sanitizarTexto(produto.categoria || 'Artigo de Fé');
 
-        const imagens = produto.imagens && produto.imagens.length > 0 ? produto.imagens : ['imagens/placeholder.jpg'];
-        const imgPrincipal = document.getElementById('detalhe-imagem');
-        if (imgPrincipal) {
-            imgPrincipal.src = imagens[0];
-            imgPrincipal.alt = sanitizarTexto(produto.nome);
-        }
-
-        // Thumbnails
-        const thumbContainer = document.querySelector('.thumb-images');
-        if (thumbContainer) {
-            thumbContainer.innerHTML = '';
-            imagens.forEach((src, idx) => {
-                const thumb = document.createElement('div');
-                thumb.className = 'thumb' + (idx === 0 ? ' active' : '');
-                thumb.style.cssText = 'width: 70px; height: 70px; background-image: url('+src+'); background-size: cover; background-position: center; border: 2px solid ' + (idx === 0 ? '#bfa15f' : '#eef2f5') + '; border-radius: 4px; cursor: pointer;';
-                thumb.addEventListener('click', () => {
-                    imgPrincipal.src = src;
-                    document.querySelectorAll('.thumb').forEach(t => t.style.borderColor = '#eef2f5');
-                    thumb.style.borderColor = '#bfa15f';
-                });
-                thumbContainer.appendChild(thumb);
-            });
-        }
-
-        // Botão comprar
-        const btnComprar = document.getElementById('btn-comprar-agora');
-        if (btnComprar) {
-            const estoque = produto.estoque !== undefined ? produto.estoque : 0;
-            if (estoque <= 0) {
-                btnComprar.textContent = 'Esgotado';
-                btnComprar.disabled = true;
-                btnComprar.style.backgroundColor = '#a0aec0';
-            } else {
-                btnComprar.textContent = '🕊️ Comprar Agora';
-                btnComprar.disabled = false;
-                btnComprar.style.backgroundColor = '';
-                btnComprar.addEventListener('click', () => {
-                    adicionarAoCarrinho(produto);
-                    window.location.href = 'checkout.html';
-                });
-            }
-        }
-    } catch (e) {
-        window.location.href = 'index.html';
+    if (valorTotal >= 150) {
+        return {
+            valor: 0,
+            prazo: '1 a 3 dias úteis',
+            mensagem: '🎉 Frete Grátis! (compras acima de R$ 150)'
+        };
     }
+
+    const prefixo = parseInt(cep.substring(0, 5));
+    let valorFrete, prazo;
+
+    if (prefixo >= 1000 && prefixo <= 9999) {
+        valorFrete = 10.00;
+        prazo = '1 a 2 dias úteis';
+    } else if (prefixo >= 10000 && prefixo <= 19999) {
+        valorFrete = 15.00;
+        prazo = '2 a 4 dias úteis';
+    } else if (prefixo >= 20000 && prefixo <= 39999) {
+        valorFrete = 20.00;
+        prazo = '3 a 5 dias úteis';
+    } else if (prefixo >= 40000 && prefixo <= 69999) {
+        valorFrete = 30.00;
+        prazo = '5 a 8 dias úteis';
+    } else if (prefixo >= 70000 && prefixo <= 99999) {
+        valorFrete = 40.00;
+        prazo = '7 a 12 dias úteis';
+    } else {
+        valorFrete = 25.00;
+        prazo = '4 a 6 dias úteis';
+    }
+
+    return {
+        valor: valorFrete,
+        prazo: prazo,
+        mensagem: `Frete: R$ ${valorFrete.toFixed(2)} - Entrega em ${prazo}`
+    };
 }
 
 // ============================================================
-//  FUNÇÃO PARA RENDERIZAR RESUMO DO CHECKOUT
+//  FUNÇÃO PARA CARREGAR DETALHES DO PRODUTO (com verificações)
+// ============================================================
+
+function carregarDetalhesProduto() {
+    console.log('carregarDetalhesProduto iniciada');
+
+    // 1. Verifica se o índice existe
+    const indexStr = sessionStorage.getItem('produto_index');
+    if (indexStr === null) {
+        console.warn('produto_index não encontrado, redirecionando para index');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const index = parseInt(indexStr, 10);
+    const produtos = carregarProdutos();
+    if (isNaN(index) || index < 0 || index >= produtos.length) {
+        console.warn('Índice inválido, redirecionando para index');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const produto = produtos[index];
+    if (!produto) {
+        console.warn('Produto não encontrado, redirecionando para index');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    console.log('Produto carregado:', produto.nome);
+
+    // 2. Preenche os elementos (com verificações)
+    const elNome = document.getElementById('detalhe-nome');
+    const elPreco = document.getElementById('detalhe-preco');
+    const elDesc = document.getElementById('detalhe-descricao');
+    const elCategoria = document.getElementById('detalhe-categoria');
+    const elImg = document.getElementById('detalhe-imagem');
+
+    if (elNome) elNome.textContent = sanitizarTexto(produto.nome);
+    else console.warn('Elemento #detalhe-nome não encontrado');
+
+    if (elPreco) elPreco.textContent = formatarPreco(produto.preco);
+    else console.warn('Elemento #detalhe-preco não encontrado');
+
+    if (elDesc) elDesc.textContent = sanitizarTexto(produto.descricao || '');
+    else console.warn('Elemento #detalhe-descricao não encontrado');
+
+    if (elCategoria) elCategoria.textContent = sanitizarTexto(produto.categoria || 'Artigo de Fé');
+    else console.warn('Elemento #detalhe-categoria não encontrado');
+
+    const imagens = produto.imagens && produto.imagens.length > 0 ? produto.imagens : ['imagens/placeholder.jpg'];
+    if (elImg) {
+        elImg.src = imagens[0];
+        elImg.alt = sanitizarTexto(produto.nome);
+    } else console.warn('Elemento #detalhe-imagem não encontrado');
+
+    // 3. Thumbnails
+    const thumbContainer = document.querySelector('.thumb-images');
+    if (thumbContainer) {
+        thumbContainer.innerHTML = '';
+        imagens.forEach((src, idx) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'thumb' + (idx === 0 ? ' active' : '');
+            thumb.style.cssText = 'width: 70px; height: 70px; background-image: url('+src+'); background-size: cover; background-position: center; border: 2px solid ' + (idx === 0 ? '#bfa15f' : '#eef2f5') + '; border-radius: 4px; cursor: pointer;';
+            thumb.addEventListener('click', () => {
+                if (elImg) {
+                    elImg.src = src;
+                    document.querySelectorAll('.thumb').forEach(t => t.style.borderColor = '#eef2f5');
+                    thumb.style.borderColor = '#bfa15f';
+                }
+            });
+            thumbContainer.appendChild(thumb);
+        });
+    } else console.warn('.thumb-images não encontrado');
+
+    // 4. Atualiza subtotal e configura eventos +/-
+    configurarEventosProduto(produto);
+}
+
+// ============================================================
+//  CONFIGURAR EVENTOS DA PÁGINA DE PRODUTO
+// ============================================================
+
+function configurarEventosProduto(produto) {
+    console.log('configurarEventosProduto para:', produto.nome);
+
+    const qtdInput = document.getElementById('qtd-produto');
+    const subtotalEl = document.getElementById('subtotal-produto');
+    const precoEl = document.getElementById('detalhe-preco');
+
+    if (!qtdInput || !subtotalEl || !precoEl) {
+        console.warn('Elementos de quantidade/subtotal não encontrados');
+        return;
+    }
+
+    // Função para atualizar subtotal
+    function atualizarSubtotal() {
+        const precoTexto = precoEl.textContent.replace('R$ ', '').replace(',', '.');
+        const preco = parseFloat(precoTexto) || 0;
+        const qtd = parseInt(qtdInput.value) || 1;
+        const subtotal = preco * qtd;
+        subtotalEl.textContent = formatarPreco(subtotal);
+    }
+
+    // Atualiza ao carregar
+    atualizarSubtotal();
+
+    // + e -
+    const btnMais = document.getElementById('qtd-mais');
+    const btnMenos = document.getElementById('qtd-menos');
+    if (btnMais) btnMais.addEventListener('click', () => {
+        qtdInput.value = parseInt(qtdInput.value) + 1;
+        atualizarSubtotal();
+    });
+    if (btnMenos) btnMenos.addEventListener('click', () => {
+        if (parseInt(qtdInput.value) > 1) {
+            qtdInput.value = parseInt(qtdInput.value) - 1;
+            atualizarSubtotal();
+        }
+    });
+
+    qtdInput.addEventListener('change', () => {
+        if (parseInt(qtdInput.value) < 1) qtdInput.value = 1;
+        atualizarSubtotal();
+    });
+
+    // Botão "Comprar Agora"
+    const btnComprar = document.getElementById('btn-comprar-agora');
+    if (btnComprar) {
+        // Verifica estoque
+        const estoque = produto.estoque !== undefined ? produto.estoque : 0;
+        if (estoque <= 0) {
+            btnComprar.textContent = 'Esgotado';
+            btnComprar.disabled = true;
+            btnComprar.style.backgroundColor = '#a0aec0';
+        } else {
+            btnComprar.textContent = '🕊️ Comprar Agora';
+            btnComprar.disabled = false;
+            btnComprar.style.backgroundColor = '';
+            // Remove listeners antigos e adiciona novo
+            btnComprar.replaceWith(btnComprar.cloneNode(true));
+            const novoBtn = document.getElementById('btn-comprar-agora');
+            novoBtn.addEventListener('click', () => {
+                const qtd = parseInt(qtdInput.value) || 1;
+                adicionarAoCarrinhoComQuantidade(produto, qtd);
+                window.location.href = 'checkout.html';
+            });
+        }
+    } else console.warn('#btn-comprar-agora não encontrado');
+
+    // Carrinho no topo
+    const cartIcon = document.getElementById('cart-icon-detalhe');
+    if (cartIcon) cartIcon.addEventListener('click', abrirCarrinho);
+
+    // Cálculo de frete
+    const btnCalcularFrete = document.getElementById('btn-calcular-frete');
+    const cepInput = document.getElementById('cep-calculo');
+    if (btnCalcularFrete && cepInput) {
+        let resultadoFrete = document.getElementById('resultado-frete');
+        if (!resultadoFrete) {
+            resultadoFrete = document.createElement('div');
+            resultadoFrete.id = 'resultado-frete';
+            resultadoFrete.style.cssText = 'margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 0.95rem; background: #f0f4f8; display: none;';
+            cepInput.parentNode.appendChild(resultadoFrete);
+        }
+
+        btnCalcularFrete.addEventListener('click', () => {
+            const cep = cepInput.value.trim();
+            const precoTexto = precoEl.textContent.replace('R$ ', '').replace(',', '.');
+            const preco = parseFloat(precoTexto) || 0;
+            const qtd = parseInt(qtdInput.value) || 1;
+            const valorTotal = preco * qtd;
+
+            const resultado = calcularFrete(cep, valorTotal);
+
+            resultadoFrete.style.display = 'block';
+            if (resultado.erro) {
+                resultadoFrete.style.backgroundColor = '#fff5f5';
+                resultadoFrete.style.color = '#e53e3e';
+                resultadoFrete.textContent = '❌ ' + resultado.mensagem;
+            } else {
+                resultadoFrete.style.backgroundColor = '#f0f4f8';
+                resultadoFrete.style.color = '#2d3748';
+                resultadoFrete.textContent = '📦 ' + resultado.mensagem + (resultado.valor === 0 ? '' : ` - Prazo: ${resultado.prazo}`);
+            }
+        });
+    } else console.warn('Elementos de frete não encontrados');
+}
+
+// ============================================================
+//  RESTO DO CÓDIGO (checkout, admin, etc.)
 // ============================================================
 
 function renderizarResumoCheckout() {
@@ -737,10 +908,6 @@ function renderizarResumoCheckout() {
     if (totalEl) totalEl.textContent = formatarPreco(total);
 }
 
-// ============================================================
-//  FUNÇÃO PARA FINALIZAR PEDIDO (salva pedido e limpa carrinho)
-// ============================================================
-
 function finalizarPedido(dadosCliente) {
     const itensCarrinho = carregarCarrinho();
     if (itensCarrinho.length === 0) {
@@ -769,211 +936,38 @@ function finalizarPedido(dadosCliente) {
     return true;
 }
 
-// ============================================================
-//  INICIALIZAÇÃO E EVENTOS
-// ============================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    // ---- PÁGINA: INDEX ----
-    const grid = document.getElementById('products-grid');
-    if (grid) {
-        const produtos = carregarProdutos();
-        renderizarVitrine(produtos);
-
-        // Filtros por categoria
-        document.querySelectorAll('[data-categoria]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                filtrarPorCategoria(link.getAttribute('data-categoria'));
-            });
-        });
-
-        // Link "Início" – resetar filtro
-        document.getElementById('link-inicio')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            resetarFiltro();
-        });
-
-        document.getElementById('btn-conhecer')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            rolarParaSecao('vitrine-produtos');
-        });
-
-        document.querySelectorAll('[data-secao="topo"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                rolarParaSecao('topo');
-            });
-        });
-
-        const btnBusca = document.getElementById('btn-busca');
-        const campoBusca = document.getElementById('campo-busca');
-        if (btnBusca && campoBusca) {
-            btnBusca.addEventListener('click', () => {
-                const termo = campoBusca.value.trim().toLowerCase();
-                const todos = carregarProdutos();
-                if (termo === '') {
-                    renderizarVitrine(todos);
-                    document.getElementById('titulo-vitrine').textContent = 'Destaques de Devoção';
-                    return;
-                }
-                const filtrados = todos.filter(p => p.nome.toLowerCase().includes(termo));
-                renderizarVitrine(filtrados);
-                document.getElementById('titulo-vitrine').textContent = 'Resultados para "' + termo + '"';
-            });
-            campoBusca.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') btnBusca.click();
-            });
-        }
-
-        document.getElementById('cart-icon')?.addEventListener('click', abrirCarrinho);
+function renderizarContatosAdmin() {
+    const container = document.getElementById('lista-contatos-admin');
+    if (!container) return;
+    const contatos = JSON.parse(localStorage.getItem('contatos_samaritana') || '[]');
+    container.innerHTML = '';
+    if (contatos.length === 0) {
+        container.innerHTML = '<p style="color:#a0aec0; text-align:center; font-style:italic;">Nenhuma mensagem recebida.</p>';
+        return;
     }
-
-    // ---- PÁGINA: GESTÃO (admin) ----
-    if (document.getElementById('login-overlay') || document.querySelector('.container-admin')) {
-        // Verifica autenticação
-        if (verificarAutenticacao()) {
-            document.getElementById('login-overlay')?.classList.add('hidden');
-            document.getElementById('admin-content')?.classList.add('visible');
-            // Renderiza os dados
-            renderizarListaExclusao();
-            renderizarPedidosAdmin();
-            // Configura eventos do admin (formulário, upload, etc.)
-            configurarEventosAdmin();
-        } else {
-            document.getElementById('login-overlay')?.classList.remove('hidden');
-            document.getElementById('admin-content')?.classList.remove('visible');
-        }
-
-        // Formulário de login
-        const formLogin = document.getElementById('form-login');
-        if (formLogin) {
-            formLogin.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const usuario = document.getElementById('usuario').value.trim();
-                const senha = document.getElementById('senha').value.trim();
-                const erro = document.getElementById('erro-login');
-                if (fazerLogin(usuario, senha)) {
-                    erro.classList.remove('visible');
-                    document.getElementById('login-overlay').classList.add('hidden');
-                    document.getElementById('admin-content').classList.add('visible');
-                    renderizarListaExclusao();
-                    renderizarPedidosAdmin();
-                    configurarEventosAdmin();
-                } else {
-                    erro.classList.add('visible');
-                    setTimeout(() => erro.classList.remove('visible'), 3000);
-                }
-            });
-        }
-
-        // Botão sair
-        document.getElementById('btn-sair')?.addEventListener('click', fazerLogout);
-    }
-
-    // ---- PÁGINA: CHECKOUT ----
-    if (document.querySelector('.checkout-container')) {
-        renderizarResumoCheckout();
-
-        document.getElementById('btn-finalizar')?.addEventListener('click', () => {
-            const nome = document.getElementById('nome-completo').value.trim();
-            const cpf = document.getElementById('cpf').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const rua = document.getElementById('rua').value.trim();
-            const numero = document.getElementById('numero').value.trim();
-            const bairro = document.getElementById('bairro').value.trim();
-            const cidade = document.getElementById('cidade').value.trim();
-            const estado = document.getElementById('estado').value.trim();
-            const cep = document.getElementById('cep-entrega').value.trim();
-
-            if (!nome || !cpf || !email || !rua || !numero || !bairro || !cidade || !estado || !cep) {
-                alert('Preencha todos os campos obrigatórios (*).');
-                return;
-            }
-            if (!validarCPF(cpf)) {
-                alert('CPF inválido. Use o formato 000.000.000-00.');
-                return;
-            }
-            if (!validarEmail(email)) {
-                alert('E-mail inválido.');
-                return;
-            }
-            if (cep.replace(/\D/g, '').length !== 8) {
-                alert('CEP inválido. Use o formato 00000-000.');
-                return;
-            }
-
-            const dadosCliente = { nome, cpf, email, endereco: { rua, numero, bairro, cidade, estado, cep } };
-            const pagamento = document.querySelector('input[name="pagamento"]:checked')?.value || 'pix';
-
-            const sucesso = finalizarPedido(dadosCliente);
-            if (sucesso) {
-                alert('Pedido finalizado com sucesso! Em breve você receberá um e-mail de confirmação.\n\n(Simulação – integração com backend em breve)');
-                window.location.href = 'index.html';
-            }
-        });
-    }
-
-    // ---- PÁGINA: PRODUTO ----
-    if (document.getElementById('detalhe-nome')) {
-        carregarDetalhesProduto();
-
-        const qtdInput = document.getElementById('qtd-produto');
-        document.getElementById('qtd-mais')?.addEventListener('click', () => {
-            qtdInput.value = parseInt(qtdInput.value) + 1;
-        });
-        document.getElementById('qtd-menos')?.addEventListener('click', () => {
-            if (parseInt(qtdInput.value) > 1) qtdInput.value = parseInt(qtdInput.value) - 1;
-        });
-
-        document.getElementById('cart-icon-detalhe')?.addEventListener('click', abrirCarrinho);
-    }
-
-    // ---- CONTROLE DO CARRINHO (global) ----
-    document.getElementById('btn-fechar-cart')?.addEventListener('click', fecharCarrinho);
-    document.getElementById('cart-overlay')?.addEventListener('click', fecharCarrinho);
-
-    // ---- MENU STICKY ----
-    window.addEventListener('scroll', () => {
-        const navbar = document.getElementById('navbar-principal');
-        const header = document.querySelector('header');
-        const topBar = document.querySelector('.top-bar');
-        if (navbar && header && topBar) {
-            const alturaHeader = header.offsetHeight + topBar.offsetHeight;
-            if (window.scrollY >= alturaHeader) {
-                navbar.classList.add('fixo');
-                document.body.classList.add('nav-fixada');
-            } else {
-                navbar.classList.remove('fixo');
-                document.body.classList.remove('nav-fixada');
-            }
-        }
+    contatos.slice().reverse().forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'admin-item-row';
+        div.style.flexDirection = 'column';
+        div.style.alignItems = 'flex-start';
+        div.innerHTML = `
+            <div><strong>${c.nome}</strong> (${c.email}) - ${c.data}</div>
+            <div>Assunto: ${c.assunto} ${c.pedidoId ? '| Pedido #'+c.pedidoId : ''}</div>
+            <div style="font-size:0.9rem; color:#4a5568;">${c.mensagem}</div>
+        `;
+        container.appendChild(div);
     });
-
-    atualizarContadorCarrinho();
-    if (document.getElementById('itens-do-carrinho')) {
-        renderizarCarrinhoLateral();
-    }
-
-});
-
-// ============================================================
-//  CONFIGURAÇÃO DE EVENTOS DO ADMIN (chamada após login)
-// ============================================================
+}
 
 function configurarEventosAdmin() {
-    // Cadastro de produto
     const formCadastro = document.getElementById('form-cadastro');
     if (formCadastro) {
-        // Sugestões de foto
         document.querySelectorAll('.sugestao-foto').forEach(el => {
             el.addEventListener('click', () => {
                 document.getElementById('foto-url').value = el.getAttribute('data-url');
             });
         });
 
-        // Upload de múltiplas imagens
         const inputFotos = document.getElementById('fotos');
         if (inputFotos) {
             inputFotos.addEventListener('change', async function() {
@@ -1017,7 +1011,6 @@ function configurarEventosAdmin() {
             });
         }
 
-        // Submit do cadastro
         formCadastro.addEventListener('submit', (e) => {
             e.preventDefault();
             const nome = sanitizarTexto(document.getElementById('nome').value.trim());
@@ -1068,7 +1061,6 @@ function configurarEventosAdmin() {
         });
     }
 
-    // Botão enviar e-mail (simulação)
     document.getElementById('btn-enviar-email')?.addEventListener('click', () => {
         const pedidos = carregarPedidos();
         if (pedidos.length === 0) {
@@ -1086,7 +1078,6 @@ function configurarEventosAdmin() {
         window.location.href = 'mailto:?subject=Relatório de Pedidos - A Samaritana&body=' + encodeURIComponent(corpo);
     });
 
-    // Botão limpar pedidos
     document.getElementById('btn-limpar-pedidos')?.addEventListener('click', () => {
         if (confirm('Limpar todos os pedidos antigos?')) {
             salvarPedidos([]);
@@ -1094,4 +1085,185 @@ function configurarEventosAdmin() {
             alert('Pedidos removidos com sucesso.');
         }
     });
+
+    if (document.getElementById('lista-contatos-admin')) {
+        renderizarContatosAdmin();
+    }
 }
+
+// ============================================================
+//  INICIALIZAÇÃO
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded – script iniciado');
+
+    // ---- PÁGINA: INDEX ----
+    const grid = document.getElementById('products-grid');
+    if (grid) {
+        const produtos = carregarProdutos();
+        renderizarVitrine(produtos);
+
+        document.querySelectorAll('[data-categoria]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                filtrarPorCategoria(link.getAttribute('data-categoria'));
+            });
+        });
+
+        document.getElementById('link-inicio')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetarFiltro();
+        });
+
+        document.getElementById('btn-conhecer')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            rolarParaSecao('vitrine-produtos');
+        });
+
+        document.querySelectorAll('[data-secao="topo"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                rolarParaSecao('topo');
+            });
+        });
+
+        const btnBusca = document.getElementById('btn-busca');
+        const campoBusca = document.getElementById('campo-busca');
+        if (btnBusca && campoBusca) {
+            btnBusca.addEventListener('click', () => {
+                const termo = campoBusca.value.trim().toLowerCase();
+                const todos = carregarProdutos();
+                if (termo === '') {
+                    renderizarVitrine(todos);
+                    document.getElementById('titulo-vitrine').textContent = 'Destaques de Devoção';
+                    return;
+                }
+                const filtrados = todos.filter(p => p.nome.toLowerCase().includes(termo));
+                renderizarVitrine(filtrados);
+                document.getElementById('titulo-vitrine').textContent = 'Resultados para "' + termo + '"';
+            });
+            campoBusca.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') btnBusca.click();
+            });
+        }
+
+        document.getElementById('cart-icon')?.addEventListener('click', abrirCarrinho);
+    }
+
+    // ---- PÁGINA: GESTÃO (admin) ----
+    if (document.getElementById('login-overlay') || document.querySelector('.container-admin')) {
+        if (verificarAutenticacao()) {
+            document.getElementById('login-overlay')?.classList.add('hidden');
+            document.getElementById('admin-content')?.classList.add('visible');
+            renderizarListaExclusao();
+            renderizarPedidosAdmin();
+            configurarEventosAdmin();
+        } else {
+            document.getElementById('login-overlay')?.classList.remove('hidden');
+            document.getElementById('admin-content')?.classList.remove('visible');
+        }
+
+        const formLogin = document.getElementById('form-login');
+        if (formLogin) {
+            formLogin.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const usuario = document.getElementById('usuario').value.trim();
+                const senha = document.getElementById('senha').value.trim();
+                const erro = document.getElementById('erro-login');
+                if (fazerLogin(usuario, senha)) {
+                    erro.classList.remove('visible');
+                    document.getElementById('login-overlay').classList.add('hidden');
+                    document.getElementById('admin-content').classList.add('visible');
+                    renderizarListaExclusao();
+                    renderizarPedidosAdmin();
+                    configurarEventosAdmin();
+                } else {
+                    erro.classList.add('visible');
+                    setTimeout(() => erro.classList.remove('visible'), 3000);
+                }
+            });
+        }
+
+        document.getElementById('btn-sair')?.addEventListener('click', fazerLogout);
+    }
+
+    // ---- PÁGINA: CHECKOUT ----
+    if (document.querySelector('.checkout-container')) {
+        renderizarResumoCheckout();
+
+        document.getElementById('btn-finalizar')?.addEventListener('click', () => {
+            const nome = document.getElementById('nome-completo').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const rua = document.getElementById('rua').value.trim();
+            const numero = document.getElementById('numero').value.trim();
+            const bairro = document.getElementById('bairro').value.trim();
+            const cidade = document.getElementById('cidade').value.trim();
+            const estado = document.getElementById('estado').value.trim();
+            const cep = document.getElementById('cep-entrega').value.trim();
+
+            if (!nome || !cpf || !email || !rua || !numero || !bairro || !cidade || !estado || !cep) {
+                alert('Preencha todos os campos obrigatórios (*).');
+                return;
+            }
+            if (!validarCPF(cpf)) {
+                alert('CPF inválido. Use o formato 000.000.000-00.');
+                return;
+            }
+            if (!validarEmail(email)) {
+                alert('E-mail inválido.');
+                return;
+            }
+            if (cep.replace(/\D/g, '').length !== 8) {
+                alert('CEP inválido. Use o formato 00000-000.');
+                return;
+            }
+
+            const dadosCliente = { nome, cpf, email, endereco: { rua, numero, bairro, cidade, estado, cep } };
+            const pagamento = document.querySelector('input[name="pagamento"]:checked')?.value || 'pix';
+
+            const sucesso = finalizarPedido(dadosCliente);
+            if (sucesso) {
+                alert('Pedido finalizado com sucesso! Em breve você receberá um e-mail de confirmação.\n\n(Simulação – integração com backend em breve)');
+                window.location.href = 'index.html';
+            }
+        });
+    }
+
+    // ---- PÁGINA: PRODUTO ----
+    if (document.getElementById('detalhe-nome')) {
+        console.log('Página de produto detectada');
+        carregarDetalhesProduto();
+        // O restante dos eventos é configurado dentro de carregarDetalhesProduto() e configurarEventosProduto()
+    }
+
+    // ---- CONTROLE DO CARRINHO (global) ----
+    document.getElementById('btn-fechar-cart')?.addEventListener('click', fecharCarrinho);
+    document.getElementById('cart-overlay')?.addEventListener('click', fecharCarrinho);
+
+    // ---- MENU STICKY ----
+    window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar-principal');
+        const header = document.querySelector('header');
+        const topBar = document.querySelector('.top-bar');
+        if (navbar && header && topBar) {
+            const alturaHeader = header.offsetHeight + topBar.offsetHeight;
+            if (window.scrollY >= alturaHeader) {
+                navbar.classList.add('fixo');
+                document.body.classList.add('nav-fixada');
+            } else {
+                navbar.classList.remove('fixo');
+                document.body.classList.remove('nav-fixada');
+            }
+        }
+    });
+
+    // Atualiza contador e carrinho ao carregar
+    atualizarContadorCarrinho();
+    if (document.getElementById('itens-do-carrinho')) {
+        renderizarCarrinhoLateral();
+    }
+
+    console.log('Inicialização concluída');
+});

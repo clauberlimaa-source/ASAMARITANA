@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco | A Samaritana</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .contato-container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .contato-box {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid #bfa15f;
+        }
+        .contato-box h2 {
+            font-family: 'Georgia', serif;
+            color: #1c3d5a;
+            margin-bottom: 8px;
+        }
+        .contato-box .sub {
+            color: #718096;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+        .contato-box .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        .contato-box .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+        .contato-box .input-group input,
+        .contato-box .input-group select,
+        .contato-box .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+        .contato-box .input-group input:focus,
+        .contato-box .input-group select:focus,
+        .contato-box .input-group textarea:focus {
+            border-color: #bfa15f;
+        }
+        .contato-box .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .btn-enviar {
+            width: 100%;
+            padding: 14px;
+            background: #1c3d5a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-enviar:hover {
+            background: #bfa15f;
+            color: #1c3d5a;
+        }
+        .campo-pedido {
+            display: none;
+        }
+        .campo-pedido.visible {
+            display: block;
+        }
+        .msg-sucesso {
+            display: none;
+            background: #c6f6d5;
+            color: #2f855a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .msg-sucesso.visible {
+            display: block;
+        }
+        .btn-voltar-contato {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #f0f4f8;
+            color: #1c3d5a;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .btn-voltar-contato:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>A Samaritana</h1>
+                    <p>Artigos Católicos</p>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="contato-container">
+        <div class="contato-box">
+            <h2>📞 Fale Conosco</h2>
+            <p class="sub">Dúvidas, sugestões, reclamações ou devoluções – estamos aqui para atender você.</p>
+
+            <form id="form-contato">
+                <div class="input-group">
+                    <label for="nome">Seu Nome *</label>
+                    <input type="text" id="nome" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">E-mail *</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="telefone">Telefone (opcional)</label>
+                    <input type="tel" id="telefone" placeholder="(19) 99999-0000">
+                </div>
+
+                <div class="input-group">
+                    <label for="assunto">Assunto *</label>
+                    <select id="assunto" required>
+                        <option value="">Selecione...</option>
+                        <option value="Reclamação">Reclamação</option>
+                        <option value="Devolução">Devolução</option>
+                        <option value="Sugestão">Sugestão</option>
+                        <option value="Dúvida">Dúvida</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+
+                <!-- Campo ID do pedido (aparece apenas para Reclamação/Devolução) -->
+                <div class="input-group campo-pedido" id="grupo-pedido">
+                    <label for="pedido-id">Número do Pedido (se aplicável)</label>
+                    <input type="text" id="pedido-id" placeholder="Ex: 123456789">
+                    <p style="font-size:0.8rem; color:#718096;">Encontre o número no seu e-mail de confirmação.</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="mensagem">Mensagem *</label>
+                    <textarea id="mensagem" required placeholder="Descreva detalhadamente sua solicitação..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-enviar">✉️ Enviar Mensagem</button>
+                <div id="msg-sucesso" class="msg-sucesso">Mensagem enviada com sucesso! Em breve retornaremos.</div>
+            </form>
+
+            <a href="index.html" class="btn-voltar-contato">← Voltar à Loja</a>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('form-contato');
+            const assuntoSelect = document.getElementById('assunto');
+            const grupoPedido = document.getElementById('grupo-pedido');
+            const msgSucesso = document.getElementById('msg-sucesso');
+
+            // Mostrar/esconder campo de ID do pedido
+            assuntoSelect.addEventListener('change', function() {
+                const valor = this.value;
+                if (valor === 'Reclamação' || valor === 'Devolução') {
+                    grupoPedido.classList.add('visible');
+                } else {
+                    grupoPedido.classList.remove('visible');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const nome = document.getElementById('nome').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const telefone = document.getElementById('telefone').value.trim();
+                const assunto = assuntoSelect.value;
+                const pedidoId = document.getElementById('pedido-id').value.trim();
+                const mensagem = document.getElementById('mensagem').value.trim();
+
+                // Validação básica
+                if (!nome || !email || !assunto || !mensagem) {
+                    alert('Preencha todos os campos obrigatórios (*).');
+                    return;
+                }
+
+                // Monta o corpo do e-mail
+                let corpo = `Nome: ${nome}\n`;
+                corpo += `E-mail: ${email}\n`;
+                if (telefone) corpo += `Telefone: ${telefone}\n`;
+                corpo += `Assunto: ${assunto}\n`;
+                if (pedidoId) corpo += `Número do Pedido: ${pedidoId}\n`;
+                corpo += `\nMensagem:\n${mensagem}\n`;
+                corpo += `\n---\nEnviado pelo site A Samaritana em ${new Date().toLocaleString('pt-BR')}`;
+
+                // Opção 1: Abrir cliente de e-mail (mailto)
+                const destinatario = 'contato@asamaritana.com.br'; // Substitua pelo e-mail real depois
+                const subject = encodeURIComponent(`[${assunto}] - ${nome}`);
+                const body = encodeURIComponent(corpo);
+                window.location.href = `mailto:${destinatario}?subject=${subject}&body=${body}`;
+
+                // Opção 2: Salvar no localStorage (para histórico no admin)
+                const contatos = JSON.parse(localStorage.getItem('contatos_samaritana') || '[]');
+                contatos.push({
+                    nome,
+                    email,
+                    telefone,
+                    assunto,
+                    pedidoId,
+                    mensagem,
+                    data: new Date().toLocaleString('pt-BR')
+                });
+                localStorage.setItem('contatos_samaritana', JSON.stringify(contatos));
+
+                // Mostrar mensagem de sucesso
+                msgSucesso.classList.add('visible');
+                form.reset();
+                grupoPedido.classList.remove('visible');
+
+                // Scroll para a mensagem
+                msgSucesso.scrollIntoView({ behavior: 'smooth' });
+
+                // Opcional: esconder a mensagem após 5 segundos
+                setTimeout(() => {
+                    msgSucesso.classList.remove('visible');
+                }, 8000);
+            });
+        });
+    </script>
+
+</body>
+</html>
